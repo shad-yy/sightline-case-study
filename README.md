@@ -1,12 +1,12 @@
 # Sightline: engineering case study
 
-[sightlinetv.com](https://sightlinetv.com) answers one question: **where can I legally watch this, in my country, right now?** That covers a Premier League match, a Formula 1 race, a film or a series, across 139 markets. The site sits on top of third-party data (sports fixtures, streaming availability, news) and a hand-verified table of broadcast rights.
+[sightlinetv.com](https://sightlinetv.com) answers one question: **where can I legally watch this, in my country, right now?** That covers a Premier League match, a Formula 1 race, a film or a series. The site sits on top of third-party data (sports fixtures, streaming availability, news) and a hand-verified table of broadcast rights.
 
 The source is private. This page is about the problems that make a site like this hard to get right, which are the same problems any product built on other people's APIs runs into, and the strategies used to solve them.
 
-**Stack:** Next.js 15 (App Router), React, TypeScript, Tailwind, Upstash Redis, Zod, Vitest, Playwright with axe accessibility scans, Vercel, GitHub Actions.
+**Stack:** Next.js 15 (App Router), React, TypeScript, Tailwind, Upstash Redis, Zod, Vitest, Playwright with axe accessibility scans, Cloudflare Workers (via OpenNext), GitHub Actions.
 
-**Measured on 16 Nov 2026:** 1,553 Vitest tests in 128 files passing (2 skipped). 53 page routes and 39 API routes.
+**Measured on 18 Nov 2026:** 1,591 Vitest tests in 133 files passing. 53 page routes and 39 API routes.
 
 ---
 
@@ -54,13 +54,13 @@ That piece is public and runnable: [fail-closed-budget](https://github.com/shad-
 
 ## Hard problem 5: Being findable for a question people ask in a hundred ways
 
-The product is only useful if it ranks for "where to watch X in Y". Each competition, country and title has its own server-rendered route with structured data, and the comparison and country pages are generated from the same verified rights table, so the copy can't drift from the data. The 139-market title pages come from one source of availability data, read through a cache with time limits.
+The product is only useful if it ranks for "where to watch X in Y". Each competition, country and title has its own server-rendered route with structured data, and the comparison and country pages are generated from the same verified rights table, so the copy can't drift from the data. The film and series title pages come from one source of availability data, read through a cache with time limits.
 
 ---
 
 ## How it's tested
 
-- **1,553 unit and component tests** (Vitest), many written as regression tests named after the failure they pin, such as `espn-fault-vs-absence` and `match-detail-absence`.
+- **1,591 unit and component tests** (Vitest), many written as regression tests named after the failure they pin, such as `espn-fault-vs-absence` and `match-detail-absence`.
 - **End-to-end tests** (Playwright) on desktop Chrome and mobile Safari and Chrome, including axe scans against WCAG 2 A/AA.
 - **CI on every push**, plus scheduled workflows: a dependency audit, an SEO health check and a production health probe.
 
